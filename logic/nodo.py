@@ -1,6 +1,7 @@
-from PyQt5 import QtWidgets, QtGui,QtCore
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QColorDialog
-from ui_nodo import Ui_Form  # Asegúrate de que este es el archivo generado por pyuic5
+from ui_py.ui_nodo import Ui_Form  # Asegúrate de que este es el archivo generado por pyuic5
+
 
 class Nodo(QtWidgets.QWidget, Ui_Form):
     def __init__(self, main_window, parent=None):
@@ -102,6 +103,7 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
             raise StopIteration
         
     def llenar_treeWidget(self, tree_widget_item=None):
+        from logic.home import MainWindow
         if tree_widget_item is None:
             # Si es el nodo raíz, creamos el primer QTreeWidgetItem
             tree_widget_item = QtWidgets.QTreeWidgetItem([f"Nodo (Nivel {self.level})"])
@@ -118,4 +120,3 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
         for hijo in self.hijos:
             hijo.llenar_treeWidget(tree_widget_item)
 
-from home import MainWindow

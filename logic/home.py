@@ -1,8 +1,7 @@
 from random import randint
-import sys
 from PyQt5 import QtWidgets,QtGui
-from ui_home import Ui_MainWindow 
-from nodo import Nodo  # Asegúrate de que el nombre del archivo es correcto
+from ui_py.ui_home import Ui_MainWindow 
+from .nodo import Nodo  # Asegúrate de que el nombre del archivo es correcto
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -48,9 +47,3 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self._agregar_nodo_a_treeWidget(hijo, item_actual)
         
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    ventana = MainWindow()
-    ventana.show()
-    sys.exit(app.exec_())
-    

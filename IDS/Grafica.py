@@ -17,12 +17,17 @@ class Grafica:
         self.fig.update_traces(line_color=color, fill='toself', fillcolor='rgba(255, 0, 0, 0.15)')  
 
     def get_png(self):
-        mpl_fig = self.fig.to_image(format="png", scale=3)
-        # Guardar la imagen en un archivo temporal
-        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_img:
-            temp_img.write(mpl_fig)
-        return temp_img
-    
+        print("Convirtiendo la gráfica a imagen PNG...")
+        try:
+            img_bytes = self.fig.to_image(format="png")  # Sin scale
+            # Guardar la imagen en un archivo temporal
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_img:
+                temp_img.write(img_bytes)
+                print("Imagen guardada en un archivo temporal.")
+            return temp_img
+        except Exception as e:
+            print(f"Error al convertir la gráfica a PNG: {str(e)}")
+            
     def get_tabla(self):
         df_transposed = self.df.transpose()
 
@@ -31,10 +36,10 @@ class Grafica:
         table = Table(data)
         return table
 
-
-grafica = Grafica(["valor 1","valor 2","valor","valor 4","valor 5","valor 6","valor 7","valor 8","valor 9","valor 10","valor 11","valor 12","valor 13","valor 14","valor 15","valor 16"],[1, 2, 2, 2, 2.5, 9, 5, 5, 5,2,2,2,2,2,2,2],'red')
+print("Generando gráfica de radar")
+grafica = Grafica(["valor 1","valor 2","valor","valor 4","valor 5","valor 6","valor 7","valor 8","valor 9","valor 10","valor 11","valor 12","valor 13","valor 14","valor 15","valor 16"],[1, 2, 2, 2, 2.5, 9, 5, 5, 5,2,2,2,2,2,2,2],'blue')
 pdf = Pdf.PDF()
 img = grafica.get_png()
+print(img)
 pdf.crear_pagina("Titulo probicional de la gráfica de radar",img,grafica.get_tabla())
-pdf.crear_pagina("Titulo probicional de ",img,grafica.get_tabla())
 pdf.guardar_pdf()

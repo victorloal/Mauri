@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QColorDialog
-from ui_py.ui_nodo import Ui_Form  # Asegúrate de que este es el archivo generado por pyuic5
+from ui_py.ui_nodo import Ui_Form
+  # Asegúrate de que este es el archivo generado por pyuic5
 
 
 class Nodo(QtWidgets.QWidget, Ui_Form):
@@ -11,9 +12,11 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
         self.init_ui()
         self.padre: Nodo = None
         self.hijos = []
+        self.id = None
         self.child_count = 0
         self.color_base = QtGui.QColor(170, 255, 255)
         self.max_darkness_level = 102
+        self.name = None
 
     def init_ui(self):
         self.add.clicked.connect(self.agregar_hijo)
@@ -26,6 +29,7 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
         nuevo_hijo = Nodo(self.main_window, self)  # Pasar la instancia de MainWindow al nuevo hijo
         nuevo_hijo.padre = self
         self.delete_2.setVisible(False)
+        self.fvgnvbghm.setVisible(False)
         self.child_count += 1
 
         darker_factor = min(120 + (self.child_count * 20), self.max_darkness_level)
@@ -64,8 +68,30 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
             self.hijos.remove(nodo)  # Remueve el nodo de la lista de hijos
             self.child_count -= 1  # Actualiza el contador de hijos
             self.repintar_hijos()  # Repinta los nodos hijos en el layout
-            self.delete_2.setVisible(self.child_count > 0)
-            self.fvgnvbghm.setVisible(self.child_count > 0)
+            self.delete_2.setVisible(self.child_count == 0)
+            if self.child_count == 0:
+                self.fvgnvbghm = QtWidgets.QWidget(self.widget_nodos)
+                self.fvgnvbghm.setStyleSheet("border: 0px solid black; ")
+                self.fvgnvbghm.setObjectName("fvgnvbghm")
+                self.gridLayout_2 = QtWidgets.QGridLayout(self.fvgnvbghm)
+                self.gridLayout_2.setObjectName("gridLayout_2")
+                spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+                self.gridLayout_2.addItem(spacerItem, 0, 2, 1, 1)
+                spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+                self.gridLayout_2.addItem(spacerItem1, 0, 0, 1, 1)
+                self.Spin = QtWidgets.QDoubleSpinBox(self.fvgnvbghm)
+                font = QtGui.QFont()
+                font.setFamily("MS Reference Sans Serif")
+                font.setPointSize(12)
+                self.Spin.setFont(font)
+                self.Spin.setStyleSheet("border: 1px solid black; border-radius: 5px; padding: 2px;\n"
+        "background-color: rgb(255, 255, 255);")
+                self.Spin.setObjectName("Spin")
+                self.gridLayout_2.addWidget(self.Spin, 0, 1, 1, 1)
+                self.nodos.addWidget(self.fvgnvbghm, 0, 0, 1, 1)
+                
+                # Ahora llamar a llenar_treeWidget desde la instancia de MainWindow
+            self.main_window.llenar_treeWidget()
 
     def repintar_hijos(self):
         # Elimina los widgets del layout sin borrar el layout en sí
@@ -102,6 +128,9 @@ class Nodo(QtWidgets.QWidget, Ui_Form):
         else:
             raise StopIteration
         
+    def get_value(self):
+        return self.Spin.value() if hasattr(self, 'Spin') else 0
+    
     def llenar_treeWidget(self, tree_widget_item=None):
         from logic.home import MainWindow
         if tree_widget_item is None:

@@ -1,4 +1,4 @@
-from Math import maths
+from IDS.Math import maths
 class Nodo:
     def __init__(self, name, id, value=None,  father = None):
         self.name = name

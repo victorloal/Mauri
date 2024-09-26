@@ -1,4 +1,3 @@
-
 from reportlab.lib.pagesizes import * 
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -6,7 +5,7 @@ from reportlab.lib import colors
 
 
 class PDF:
-    def __init__(self, formato=A4, titulo="Nuevo PDF", marca_agua=False):
+    def __init__(self, formato=A4, titulo="Nuevo PDF1", marca_agua=False):
         self.formato = formato
         self.marca_agua = marca_agua
         self.pdf_path = f"{titulo}.pdf"

@@ -1,5 +1,5 @@
-import Nodo as nodo
-import Math as math
+import IDS.Nodo as nodo
+import IDS.Math as math
 
 
 class Tree:
@@ -21,6 +21,7 @@ class Tree:
         except:
             pass
         self.id += 1
+        return new_node
     
         
     

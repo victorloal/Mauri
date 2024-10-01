@@ -1,3 +1,5 @@
+from IDS.Grafica import Grafica
+from IDS.Pdf import PDF
 import IDS.Nodo as nodo
 import IDS.Math as math
 
@@ -48,30 +50,54 @@ class Tree:
     def get_nodos_ordenados_por_nivel(self):
         lista_de_nodos = self.leaves
         nodos_ordenados_por_nivel = sorted(lista_de_nodos, key=self.get_level_key, reverse=True)
-        for nodo in nodos_ordenados_por_nivel:
-            print(nodo.get_name(), nodo.get_level())
         return nodos_ordenados_por_nivel
     
-    def get_result(self):
+    def get_result(self,ruta):
         self.auxNodos = self.get_nodos_ordenados_por_nivel()
-        print("++==================++")
 
         while True:
             nodo = self.auxNodos[0]
             nodoFather = nodo.get_father()
             if nodoFather:
                 nodoFather.result()
-                print(nodoFather.get_name()+" "+str(nodoFather.get_value()))
                 self.auxNodos.append(nodoFather)
                 for nodo in nodoFather.get_children():
                     self.auxNodos.remove(nodo)
             else:
                 break
 
-        print(self.root.get_value())
-        print("++==================++")
+        self.generar_pdf(ruta)
         
+    def generar_pdf(self,ruta):
+        pdf = PDF(titulo=f"Resultados: {str(self.root.name)}",ruta=ruta)  # Crear el PDF
+        self.generar_pdf_recursivo(self.root, pdf)  # Generar el PDF recursivamente
+        pdf.guardar_pdf()  
+
+    
+    def generar_pdf_recursivo(self, nodo, pdf):
+        nombres = []
+        valores = []
+        titulo = f"Resultados de {nodo.get_name()}"
+        
+        # Obtener los hijos del nodo actual
+        hijos = nodo.get_children()  # Asegúrate de que este método exista y funcione
+
+        for hijo in hijos:
+            # Agregar nombre y valor del hijo actual
+            nombres.append(hijo.get_name()) 
+            valores.append(hijo.get_value())
             
+            # Llamar recursivamente a los hijos del hijo actual
+            self.generar_pdf_recursivo(hijo, pdf)
+
+        # Solo crear la gráfica si hay nombres y valores
+        if nombres and valores:
+            grafica = Grafica(nombres, valores, nodo.get_value())
+            img = grafica.get_png()
+            pdf.crear_pagina(titulo, img)  # Crear una página por cada nodo padre con sus hijos
+        else:
+            pass
+  
         
     
     def calculate_average(self):
@@ -104,4 +130,9 @@ class Tree:
                 result += self.__str__([leaf.get_father()])
         
         return result
+    
+    def pdf (self):
+        
+        pass
+        
     

@@ -1,11 +1,12 @@
+import os
 from random import randint
 from PyQt5 import QtWidgets,QtGui
 from IDS import Grafica, Pdf
-from ui_py.ui_home import Ui_MainWindow 
+from ui_py.ui_home import Ui_IDS 
 from .nodo import Nodo  # Asegúrate de que el nombre del archivo es correcto
 from IDS.Tree import Tree
 
-class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_IDS):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -17,8 +18,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.nodo.id = 0
         # Call the standalone calcular_resultado method
         self.calcular_resultado_recursive(tree,self.nodo)
-        tree.get_result()
-        tree.root.get_value()
+        # Abrir ventana para seleccionar la carpeta de guardado
+        ruta_carpeta = QtWidgets.QFileDialog.getExistingDirectory(self, 'Seleccionar Carpeta', '')
+        
+        if ruta_carpeta:
+            # Especificar el nombre del archivo PDF que deseas guardar
+            nombre_pdf = "documento.pdf"  # Puedes cambiar esto según tu lógica
+            ruta_completa = os.path.join(ruta_carpeta, nombre_pdf)
+            
+            # Llamar a tu método para obtener el resultado del árbol
+            tree.get_result(ruta_carpeta)
+            print(f"PDF guardado en {ruta_completa}")
 
     def calcular_resultado_recursive(self, tree,nodo):
         level = 0
@@ -29,23 +39,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             
             result = tree.add_node(hijo.lineEdit.text(), nodo.id, hijo.get_value())
             hijo.id = result.id 
-            print(hijo.get_value())
             level = tree.get_level_key(result)
             nombre.append(hijo.lineEdit.text())
             valores.append(hijo.get_value())
             self.calcular_resultado_recursive(tree,hijo) 
         
-        # Generara PDF
-        titulo = ("Generando gráfica de radar del nivel "+level)
-        grafica = Grafica.Grafica(
-            nombre,valores,'red')
-        pdf = Pdf.PDF()
-        img = grafica.get_png()
-        print(img)
-        pdf.crear_pagina(titulo,img,grafica.get_tabla())
-        pdf.guardar_pdf()
-        
-        pass 
+        titulo = f"Generando gráfica de radar del nivel {level}"
+
+        # Asegúrate de que los valores y nombres no estén vacíos
+        if nombre and valores:
+            grafica = Grafica.Grafica(nombre, valores, nodo.get_value())
+            img = grafica.get_png()
+            pdf = Pdf.PDF(titulo=titulo)
+            pdf.crear_pagina(titulo, img)
+            pdf.guardar_pdf()
+        else:
+            pass
+
     def add_nodo_principal(self):
         nodo_principal = Nodo(self)  # Pasar la instancia de MainWindow
         self.nodo = nodo_principal

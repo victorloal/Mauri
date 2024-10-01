@@ -4222,7 +4222,7 @@
   ('libopenblas64_p-r0-0cf96a72.3.23.dev.so',
    'numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so',
    'SYMLINK')],
- 'libpython3.10.so',
+ 'libpython3.10.so.1.0',
  False,
  False,
  False,
